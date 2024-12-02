@@ -4,7 +4,7 @@ A **S**tupidly **S**imple **S**tatic **S**ite **Ge**nerator. Write, Process, HTM
 
 ---
 
-# Why another static site generator?
+## Why another static site generator?
 
 There are no solutions written in Python that are simply a static site generator! The available options are focused on blogging and architected for it. If there's your goal, you might want to check them out.
 
