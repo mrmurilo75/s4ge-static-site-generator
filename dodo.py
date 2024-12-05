@@ -3,7 +3,7 @@ def task_render_site(): # Task 'render_site'
         'actions': ['python3 app.py'],
     }
 
-def task_cp_resources(): # Task 'cp resources'
+def task_copy_resources(): # Task 'cp resources'
     source_dir = '_source/'
     destination_dir = '_site/'
     return {
