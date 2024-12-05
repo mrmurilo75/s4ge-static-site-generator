@@ -163,3 +163,7 @@ cython_debug/
 
 # doit stuff
 .doit.db
+
+# s4ge stuff
+_site/**
+_rendered/**
