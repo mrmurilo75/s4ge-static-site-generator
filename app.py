@@ -5,19 +5,20 @@ from pathlib import Path
 from config import *
 
 ## Render Markdown (mistletoe)
-def render_md_to_html(source_dir: Path, destination_dir: Path):
+def render_md_to_html(source_dir: str, destination_dir: str):
     for root, _dirs, filenames in os.walk(source_dir):
         for fname in filenames:
+            fname = Path(fname)
             source = Path(root, fname)
 
             if (not source.is_file() or
-                not Path(fname).suffix in ("markdown", "md")):
+                fname.suffix not in (".markdown", ".md")):
                 continue
 
-            destination = Path(root.replace(source_dir.name, destination_dir.name, 1))
+            destination = Path(root.replace(source_dir, destination_dir, 1))
             destination.mkdir(parents=True, exist_ok=True)
 
-            destination = destination / fname.with_suffix("html")
+            destination = destination / fname.with_suffix(".html")
 
             with (
                 source.open() as fin,
@@ -29,7 +30,7 @@ def render_md_to_html(source_dir: Path, destination_dir: Path):
                     )
                 )
 
-render_md_to_html(SOURCE, CONFIG["rendered"])
+render_md_to_html(str(SOURCE), CONFIG["rendered"])
 
 
 ## Render template (Jinja2)
