@@ -1,14 +1,35 @@
-## Render Markdown (mistletoe)
+import os
 import mistletoe
+from pathlib import Path
 
-SOURCE = '_source/index.md'
-DESTINATION = '_rendered/index.html'
+from config import *
 
-with open(SOURCE, 'r') as fin:
-    rendered = mistletoe.markdown(fin)
+## Render Markdown (mistletoe)
+def render_md_to_html(source_dir: Path, destination_dir: Path):
+    for root, _dirs, filenames in os.walk(source_dir):
+        for fname in filenames:
+            source = Path(root, fname)
 
-with open(DESTINATION, 'w') as fout:  # Assumes folder exists
-    fout.write(rendered)
+            if (not source.is_file() or
+                not Path(fname).suffix in ("markdown", "md")):
+                continue
+
+            destination = Path(root.replace(source_dir.name, destination_dir.name, 1))
+            destination.mkdir(parents=True, exist_ok=True)
+
+            destination = destination / fname.with_suffix("html")
+
+            with (
+                source.open() as fin,
+                destination.open("w") as fout,
+            ):
+                fout.write(
+                    mistletoe.markdown(
+                        fin.read()
+                    )
+                )
+
+render_md_to_html(SOURCE, CONFIG["rendered"])
 
 
 ## Render template (Jinja2)
