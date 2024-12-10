@@ -166,4 +166,4 @@ cython_debug/
 
 # s4ge stuff
 _site/**
-_rendered/**
+_rendered/
