@@ -1,55 +1,53 @@
+import logging
 import os
 import mistletoe
 from pathlib import Path
 
 from config import *
 
+
 ## Render Markdown (mistletoe)
-def render_md_to_html(source_dir: str, destination_dir: str):
-    for root, _dirs, filenames in os.walk(source_dir):
-        for fname in filenames:
-            fname = Path(fname)
-            source = Path(root, fname)
+def process_dir(
+    source_path: Path,
+    destination_path: Path,
+    process: callable,
+    source_validator: callable = lambda s: True,
+    destination_transform: callable = lambda s: s,
+):
+    for root, _dirs, filenames in  os.walk(source_path):
+        for source in filter(source_validator, (Path(root, fname) for fname in filenames)):
+            destination_replica = destination_path / Path(source).relative_to(source_path)
+            destination_replica.parent.mkdir(parents=True, exist_ok=True)
 
-            if (not source.is_file() or
-                fname.suffix not in (".markdown", ".md")):
-                continue
-
-            destination = Path(root.replace(source_dir, destination_dir, 1))
-            destination.mkdir(parents=True, exist_ok=True)
-
-            destination = destination / fname.with_suffix(".html")
+            destination = destination_transform(destination_replica)
+            print(f"Processing source '{source}' to destination '{destination}'.")
 
             with (
                 source.open() as fin,
                 destination.open("w") as fout,
             ):
-                fout.write(
-                    mistletoe.markdown(
-                        fin.read()
-                    )
-                )
-
-render_md_to_html(str(SOURCE), CONFIG["rendered"])
+                process(fin, fout)
 
 
-## Render template (Jinja2)
-from jinja2 import Environment, FileSystemLoader
+def render_md_to_html(source_dir, destination_dir):
+    process_dir(
+        source_dir,
+        destination_dir,
+        process = lambda source, destination: destination.write(mistletoe.markdown(source.read())),
+        source_validator = lambda source: source.is_file() and source.suffix in (".markdown", ".md"),
+        destination_transform = lambda destination: destination.with_suffix(".html"),
+    )
 
-SOURCE = '_rendered/index.html'
-DESTINATION = '_site/index.html'
 
-TEMPLATES_FOLDER = '_templates/'
-TEMPLATE = 'index.html'
+## Render Jinja2 template
+def render_to_template(source_dir, destination_dir, template):
+    template = Templates.get_template(template)
 
-env = Environment(loader=FileSystemLoader(TEMPLATES_FOLDER))
-template = env.get_template(TEMPLATE)
+    process_dir(
+        source_dir,
+        destination_dir,
+        process = lambda s, d: d.write(template.render({"content": s.read()})),
+    )
 
-context = {}
-with open(SOURCE, 'r') as fin:
-    context["content"] = fin.read()
-
-rendered = template.render(context)
-
-with open(DESTINATION, 'w') as fout:  # Assumes folder exists
-    fout.write(rendered)
+render_md_to_html(SOURCE_PATH, Configured["rendered"])
+render_to_template(Configured["rendered"], DESTINATION_PATH, "index.html")
