@@ -7,5 +7,6 @@ APP_DIR = Path(__file__).resolve(strict=True).parent
 with (APP_DIR / '_config.json').open("r") as ff:
     CONFIG = json.load(ff)
 
-SOURCE = APP_DIR / CONFIG["source"]
-DESTINATION = APP_DIR / CONFIG["destination"]
+SOURCE_PATH = APP_DIR / CONFIG["source"]
+DESTINATION_PATH = APP_DIR / CONFIG["destination"]
+TEMPLATES_PATH = APP_DIR / CONFIG["templates"]

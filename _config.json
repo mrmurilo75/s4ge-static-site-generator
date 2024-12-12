@@ -1,5 +1,6 @@
 {
   "source": "_source",
   "rendered": "_rendered",
-  "destination": "_site"
+  "destination": "_site",
+  "templates": "_templates"
 }
