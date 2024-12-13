@@ -1,20 +1,38 @@
-from s4ge.config import *
-from s4ge.app import render_md_to_html, render_to_template
+from s4ge import utils, app, config
 
 
 def task_render_md_to_html():
     return {
-        "actions": [(render_md_to_html, (SOURCE_PATH, Configured["rendered"]))],
+        "file_dep": [*utils.get_all_files(config.SOURCE_PATH, utils.is_markdown)],
+        "targets": [config.Configured["rendered"]],
+        "actions": [
+            (app.render_md_to_html, (config.SOURCE_PATH, config.Configured["rendered"]))
+        ],
     }
 
 
 def task_render_to_template():
     return {
-        "actions": [(render_to_template, (Configured["rendered"], DESTINATION_PATH, "index.html"))],
+        "file_dep": [*utils.get_all_files(config.Configured["rendered"])],
+        "targets": [config.DESTINATION_PATH],
+        "actions": [
+            (
+                app.render_to_template,
+                (config.Configured["rendered"], config.DESTINATION_PATH, "index.html"),
+            )
+        ],
     }
 
 
-def task_copy_resources(): # Task 'cp resources'
+def task_copy_resources():  # Task 'cp resources'
     return {
-        'actions': [f'rsync -a --checksum --exclude="*.md" --delete {SOURCE_PATH}* {DESTINATION_PATH}'],
+        "file_dep": [
+            *utils.get_all_files(
+                config.Configured["rendered"], lambda s: not utils.is_markdown(s)
+            )
+        ],
+        # "targets": [config.DESTINATION_PATH],  # ERROR: Two different tasks can't have a common target
+        "actions": [
+            f'rsync -a --checksum --exclude="*.md" --delete {config.SOURCE_PATH}/* {config.DESTINATION_PATH}/'
+        ],
     }
