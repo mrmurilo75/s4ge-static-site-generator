@@ -48,6 +48,3 @@ def render_to_template(source_dir, destination_dir, template):
         destination_dir,
         process = lambda s, d: d.write(template.render({"content": s.read()})),
     )
-
-render_md_to_html(SOURCE_PATH, Configured["rendered"])
-render_to_template(Configured["rendered"], DESTINATION_PATH, "index.html")
