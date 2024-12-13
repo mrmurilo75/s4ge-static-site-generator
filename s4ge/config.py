@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 
 APP_DIR = Path(__file__).resolve(strict=True).parent
-PROJECT_DIR = APP_DIR
+PROJECT_DIR = APP_DIR.parent
 
 # In the future we'll look for different extensions
 with (PROJECT_DIR / "_config.json").open() as ff:

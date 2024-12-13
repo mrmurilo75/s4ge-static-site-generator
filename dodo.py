@@ -1,5 +1,5 @@
-from config import *
-from app import render_md_to_html, render_to_template
+from s4ge.config import *
+from s4ge.app import render_md_to_html, render_to_template
 
 
 def task_render_md_to_html():

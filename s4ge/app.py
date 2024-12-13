@@ -3,7 +3,7 @@ import os
 import mistletoe
 from pathlib import Path
 
-from config import *
+from s4ge.config import *
 
 
 ## Render Markdown (mistletoe)
