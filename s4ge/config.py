@@ -9,7 +9,7 @@ PROJECT_DIR = APP_DIR.parent
 with (PROJECT_DIR / "_config.json").open() as ff:
     Configured = json.load(ff)
 
-SOURCE_PATH = (PROJECT_DIR / Configured["source"])
+SOURCE_PATH = PROJECT_DIR / Configured["source"]
 DESTINATION_PATH = PROJECT_DIR / Configured["destination"]
 
 Templates = Environment(loader=FileSystemLoader(PROJECT_DIR / Configured["templates"]))
