@@ -1,5 +1,7 @@
 from s4ge import utils, app, config
 
+TEMPLATE = "index.html"
+
 md_source = utils.get_all_files(config.SOURCE_PATH, utils.is_markdown)
 other_source = utils.get_all_files(
     config.SOURCE_PATH, lambda s: not utils.is_markdown(s)
@@ -19,9 +21,7 @@ def task_render_md_to_html():
     return {
         "file_dep": md_source,
         "targets": md_rendered,
-        "actions": [
-            (app.render_md_to_html, (config.SOURCE_PATH, config.INTERMEDIARY_PATH))
-        ],
+        "actions": [app.render_md_to_html],
     }
 
 
@@ -33,12 +33,7 @@ def task_render_to_template():
             relative_to=config.INTERMEDIARY_PATH,
             target=config.DESTINATION_PATH,
         ),
-        "actions": [
-            (
-                app.render_to_template,
-                (config.INTERMEDIARY_PATH, config.DESTINATION_PATH, "index.html"),
-            )
-        ],
+        "actions": [(app.render_to_template, (), {"template": TEMPLATE})],
     }
 
 
