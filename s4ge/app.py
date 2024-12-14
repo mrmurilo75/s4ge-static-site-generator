@@ -5,16 +5,16 @@ from jinja2 import Environment, FileSystemLoader
 
 from . import config
 
+md_templated_source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
 
 def render_md_templated(dependencies, targets):
-    source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
     for dep, targ in zip(dependencies, targets):
         Path(targ).parent.mkdir(
             parents=True, exist_ok=True
         )  # Create dirs if doesn't exists
         with open(targ, "w") as destination:
             destination.write(
-                source.get_template(
+                md_templated_source.get_template(
                     str(Path(dep).relative_to(config.SOURCE_PATH))
                 ).render(config=config.Configured)
             )
