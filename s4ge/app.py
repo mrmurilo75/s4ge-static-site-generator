@@ -9,6 +9,8 @@ md_templated_source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
 
 
 def render_md_templated(dependencies, targets):
+    dependencies.sort()
+    targets.sort()
     for dep, targ in zip(dependencies, targets):
         Path(targ).parent.mkdir(
             parents=True, exist_ok=True
@@ -22,6 +24,8 @@ def render_md_templated(dependencies, targets):
 
 
 def render_md_to_html(dependencies, targets):
+    dependencies.sort()
+    targets.sort()
     for dep, targ in zip(dependencies, targets):
         Path(targ).parent.mkdir(
             parents=True, exist_ok=True
@@ -31,6 +35,8 @@ def render_md_to_html(dependencies, targets):
 
 
 def render_to_template(dependencies, targets, dep_root):
+    dependencies.sort()
+    targets.sort()
     for dep, targ in zip(dependencies, targets):
         # Get config for current file
         cur_conf = config.Configured["values"]
