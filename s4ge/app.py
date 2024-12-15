@@ -1,4 +1,5 @@
 import mistletoe
+import yaml
 
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
@@ -6,6 +7,43 @@ from jinja2 import Environment, FileSystemLoader
 from . import config
 
 md_templated_source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
+
+
+def pop_front_matter(dependencies, targets):
+    dependencies.sort()
+    targets.sort()
+    for dep, targ in zip(dependencies, targets):
+        # Create target parents if it doesn't exist
+        Path(targ).parent.mkdir(parents=True, exist_ok=True)
+
+        with (
+            open(dep) as source,
+            open(targ, "w") as destination,
+        ):
+            # Buffer front-matter
+            write_cur = False
+            front_matter = ""
+            cur = source.readline()  # First line - skip if no front matter
+            print(cur)
+            if cur.rstrip() != "---":
+                write_cur = True
+            else:
+                cur = source.readline()
+                while cur.rstrip() != "---":
+                    print(cur)
+                    front_matter += cur
+                    cur = source.readline()
+
+            # Write front-matter if any
+            if front_matter.strip() != "":
+                with Path(targ).with_suffix(".yaml").open("w") as dest_yaml:
+                    dest_yaml.write(front_matter)
+
+            # Write first line if no front-matter
+            if write_cur:
+                destination.write(cur)
+            # Write remaining source
+            destination.write(source.read())
 
 
 def render_md_templated(dependencies, targets, dep_root):
