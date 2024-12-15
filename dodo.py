@@ -26,6 +26,7 @@ def task_render_md_templates():
         "file_dep": md_source,
         "targets": md_templated,
         "actions": [app.render_md_templated],
+        "clean": True,
     }
 
 
@@ -34,6 +35,7 @@ def task_render_md_to_html():
         "file_dep": md_templated,
         "targets": md_to_html,
         "actions": [app.render_md_to_html],
+        "clean": True,
     }
 
 
@@ -46,6 +48,7 @@ def task_render_to_template():
             target=config.DESTINATION_PATH,
         ),
         "actions": [(app.render_to_template, (), {"dep_root": md_to_html_root})],
+        "clean": True,
     }
 
 
@@ -60,4 +63,5 @@ def task_copy_resources():  # Task 'cp resources'
         "actions": [
             f'rsync -a --checksum --exclude="*.md" {config.SOURCE_PATH}/* {config.DESTINATION_PATH}/'
         ],
+        "clean": True,
     }
