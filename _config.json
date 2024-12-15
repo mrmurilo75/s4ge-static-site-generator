@@ -2,5 +2,9 @@
   "source": "source",
   "rendered": "_rendered",
   "destination": "_site",
-  "templates": "templates"
+  "templates": "templates",
+  "layout": "index.html",
+  "values": {
+    "sage-types": {"layout": "note.html"}
+  }
 }

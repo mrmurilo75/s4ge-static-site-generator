@@ -1,7 +1,5 @@
 from s4ge import utils, app, config
 
-TEMPLATE = "index.html"
-
 md_source = utils.get_all_files(config.SOURCE_PATH, utils.is_markdown)
 other_source = utils.get_all_files(
     config.SOURCE_PATH, lambda s: not utils.is_markdown(s)
@@ -47,7 +45,7 @@ def task_render_to_template():
             relative_to=md_to_html_root,
             target=config.DESTINATION_PATH,
         ),
-        "actions": [(app.render_to_template, (), {"template": TEMPLATE})],
+        "actions": [(app.render_to_template, (), {"dep_root": md_to_html_root})],
     }
 
 
@@ -60,6 +58,6 @@ def task_copy_resources():  # Task 'cp resources'
             target=config.DESTINATION_PATH,
         ),
         "actions": [
-            f'rsync -a --checksum --exclude="*.md" --delete {config.SOURCE_PATH}/* {config.DESTINATION_PATH}/'
+            f'rsync -a --checksum --exclude="*.md" {config.SOURCE_PATH}/* {config.DESTINATION_PATH}/'
         ],
     }
