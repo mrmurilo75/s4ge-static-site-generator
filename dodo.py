@@ -25,7 +25,7 @@ def task_render_md_templates():
     return {
         "file_dep": md_source,
         "targets": md_templated,
-        "actions": [app.render_md_templated],
+        "actions": [(app.render_md_templated, (), {"dep_root": config.SOURCE_PATH})],
         "clean": True,
     }
 

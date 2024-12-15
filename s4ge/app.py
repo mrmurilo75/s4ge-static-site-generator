@@ -8,7 +8,7 @@ from . import config
 md_templated_source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
 
 
-def render_md_templated(dependencies, targets):
+def render_md_templated(dependencies, targets, dep_root):
     dependencies.sort()
     targets.sort()
     for dep, targ in zip(dependencies, targets):
@@ -18,7 +18,7 @@ def render_md_templated(dependencies, targets):
         with open(targ, "w") as destination:
             destination.write(
                 md_templated_source.get_template(
-                    str(Path(dep).relative_to(config.SOURCE_PATH))
+                    str(Path(dep).relative_to(dep_root))
                 ).render(config=config.Configured)
             )
 
