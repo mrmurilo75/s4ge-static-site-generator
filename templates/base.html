@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block tilte %}s4ge Space{% endblock %}</title>
+    <link rel="stylesheet" href="{{ config.style_sheet }}">
+</head>
+<body>
+    <header>
+        <h1>{{ page.title | default('s4ge Space') }}</h1>
+        <!-- <nav>
+            <ul>
+                <li><a href="">LINK TO PAGE</a></li>
+            </ul>
+        </nav> -->
+    </header>
+    <main class="container">
+        {% block main %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>2024 s4ge Space | powered by <a href="https://github.com/mrmurilo75/s4ge-static-site-generator/">s4ge</a></p>
+    </footer>
+</body>
+</html>
