@@ -1,5 +1,5 @@
 ---
-layout: index.html
+title: Spiritual
 ---
 
 Sage holds significant meaning in many spiritual and cultural traditions:
