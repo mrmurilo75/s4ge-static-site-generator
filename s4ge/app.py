@@ -6,7 +6,6 @@ from jinja2 import Environment, FileSystemLoader
 
 from . import config
 
-md_templated_source = Environment(loader=FileSystemLoader(config.SOURCE_PATH))
 
 
 def _load_front_matter(dep, dep_root, fm_root):
@@ -61,6 +60,9 @@ def pop_front_matter(dependencies, targets):
 def render_md_templated(dependencies, targets, dep_root):
     dependencies.sort()
     targets.sort()
+
+    md_templated_source = Environment(loader=FileSystemLoader(dep_root))
+
     for dep, targ in zip(dependencies, targets):
         # Create target parents if it doesn't exist
         Path(targ).parent.mkdir(parents=True, exist_ok=True)
