@@ -3,6 +3,7 @@
   "rendered": "_rendered",
   "destination": "_site",
   "templates": "templates",
+  "style_sheet": "/assets/main.css",
   "layout": "index.html",
   "values": {
     "sage-types": {"layout": "note.html"}
