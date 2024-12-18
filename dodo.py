@@ -61,7 +61,16 @@ def task_render_to_template():
             relative_to=md_to_html_root,
             target=config.DESTINATION_PATH,
         ),
-        "actions": [(app.render_to_template, (), {"dep_root": md_to_html_root})],
+        "actions": [
+            (
+                app.render_to_template,
+                (),
+                {
+                    "dep_root": md_to_html_root,
+                    "frontmatter_root": md_cleaned_root,
+                },
+            )
+        ],
         "clean": True,
     }
 
