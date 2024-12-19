@@ -1,6 +1,7 @@
 from s4ge import utils, app, config
 
 md_source = utils.get_all_files(config.SOURCE_PATH, utils.is_markdown)
+md_source_root = config.SOURCE_PATH
 other_source = utils.get_all_files(
     config.SOURCE_PATH, lambda s: not utils.is_markdown(s)
 )
@@ -9,6 +10,7 @@ md_cleaned_root = config.INTERMEDIARY_PATH / "md_cleaned"
 md_cleaned = utils.replicate(
     md_source, target=md_cleaned_root, relative_to=config.SOURCE_PATH
 )
+full_config_file = md_cleaned_root / "_values.json"
 
 md_templated_root = config.INTERMEDIARY_PATH / "md_templated"
 md_templated = utils.replicate(
@@ -26,11 +28,11 @@ md_to_html = list(
 )
 
 
-def task_pop_front_matter():
+def task_clean_source():
     return {
         "file_dep": md_source,
         "targets": md_cleaned,
-        "actions": [app.pop_front_matter],
+        "actions": [(app.clean_source, (), {"dep_root": md_source_root,"full_config": full_config_file})],
         "clean": [f"rm -r {md_cleaned_root}/*"],
     }
 
@@ -67,7 +69,7 @@ def task_render_to_template():
                 (),
                 {
                     "dep_root": md_to_html_root,
-                    "frontmatter_root": md_cleaned_root,
+                    "front_matter_file": full_config_file,
                 },
             )
         ],

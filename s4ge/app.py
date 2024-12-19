@@ -1,4 +1,5 @@
 import mistletoe
+import json
 import yaml
 
 from pathlib import Path
@@ -6,6 +7,39 @@ from jinja2 import Environment, FileSystemLoader
 
 from . import config
 
+
+def multilevel_dict_access(
+    path: list[str],
+    source: dict[str, any],
+    write: bool | dict = False,
+    clean: bool = False,
+    access_key: str = "_values",
+):
+    cur = source
+    leaf_value = cur.get(access_key, {})
+    for part in path:
+        if cur.get(part, None) is None:
+            if not write:
+                return None
+            cur[part] = {}
+
+        parent = cur
+        cur = parent[part]
+
+        values = cur.get(access_key, {})
+        leaf_value.update(values)
+
+        if clean:
+            cur.pop(access_key, None)
+
+    if isinstance(write, dict):
+        leaf_value.update(write)
+    if write:
+        if clean:
+            parent[part] = leaf_value
+        else:
+            cur[access_key] = leaf_value
+    return leaf_value
 
 
 def _load_front_matter(dep, dep_root, fm_root):
@@ -20,35 +54,37 @@ def _load_front_matter(dep, dep_root, fm_root):
     return front_matter
 
 
-def pop_front_matter(dependencies, targets):
+def clean_source(dependencies, targets, dep_root, full_config):
     dependencies.sort()
     targets.sort()
+    config_values = config.Configured["_values"]
     for dep, targ in zip(dependencies, targets):
         # Create target parents if it doesn't exist
         Path(targ).parent.mkdir(parents=True, exist_ok=True)
 
-        with (
-            open(dep) as source,
-            open(targ, "w") as destination,
-        ):
+        with open(dep) as source, open(targ, "w") as destination:
             # Buffer front-matter
             write_cur = False
-            front_matter = ""
+            front_matter_str = ""
+            front_matter = {}
             cur = source.readline()  # First line - skip if no front matter
-            print(cur)
             if cur.rstrip() != "---":
                 write_cur = True
             else:
                 cur = source.readline()
                 while cur.rstrip() != "---":
-                    print(cur)
-                    front_matter += cur
+                    front_matter_str += cur
                     cur = source.readline()
+                front_matter = yaml.safe_load(front_matter_str)
 
-            # Write front-matter if any
-            if front_matter.strip() != "":
-                with Path(targ).with_suffix(".yaml").open("w") as dest_yaml:
-                    dest_yaml.write(front_matter)
+            # Write config and front_matter
+            multilevel_dict_access(  # updates config_values
+                Path(dep).relative_to(dep_root).parts,
+                config_values,
+                write=front_matter,
+            )
+            with open(full_config, "w") as full_conf_file:
+                json.dump(config_values, full_conf_file)
 
             # Write first line if no front-matter
             if write_cur:
