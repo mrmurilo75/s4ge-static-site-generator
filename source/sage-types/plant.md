@@ -1,5 +1,5 @@
 ---
-title: Plant
+title: As a Plant (Culinary and Medicinal)
 ---
 
 Sage is also an herb widely used in cooking and traditional medicine:

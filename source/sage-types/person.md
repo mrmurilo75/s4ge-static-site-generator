@@ -1,5 +1,5 @@
 ---
-title: Person
+title: As a Person (Wise Individual)
 ---
 
 A sage is traditionally regarded as a person of profound wisdom and knowledge, often sought for their advice or guidance. Sages are typically associated with deep thought, life experience, and an ability to see beyond surface-level matters. They have been celebrated across cultures:
