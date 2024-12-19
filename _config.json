@@ -5,7 +5,7 @@
   "templates": "templates",
   "style_sheet": "/assets/main.css",
   "layout": "index.html",
-  "values": {
-    "sage-types": {"layout": "note.html"}
+  "_values": {
+    "sage-types": {"_values": {"layout": "note.html"}}
   }
 }
