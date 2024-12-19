@@ -48,6 +48,7 @@ def multilevel_dict_access(
     if writing:
         leaf_value.update(write)
         cur[access_key] = leaf_value
+        cur[access_key]['path'] = '/'.join(path)
 
     return leaf_value
 
