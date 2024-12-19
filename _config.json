@@ -4,8 +4,8 @@
   "destination": "_site",
   "templates": "templates",
   "style_sheet": "/assets/main.css",
-  "layout": "index.html",
-  "_values": {
-    "sage-types": {"_values": {"layout": "note.html"}}
+  "cascade": {
+    "sage-types": { "_values": { "layout": "note.html" } },
+    "_values": { "layout": "index.html" }
   }
 }
