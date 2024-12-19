@@ -32,7 +32,16 @@ def task_clean_source():
     return {
         "file_dep": md_source,
         "targets": md_cleaned,
-        "actions": [(app.clean_source, (), {"dep_root": md_source_root,"full_config": full_config_file})],
+        "actions": [
+            (
+                app.clean_source,
+                (),
+                {
+                    "dep_root": md_source_root,
+                    "full_config": full_config_file,
+                },
+            )
+        ],
         "clean": [f"rm -r {md_cleaned_root}/*"],
     }
 
@@ -41,7 +50,16 @@ def task_render_md_templates():
     return {
         "file_dep": md_cleaned,
         "targets": md_templated,
-        "actions": [(app.render_md_templated, (), {"dep_root": md_cleaned_root})],
+        "actions": [
+            (
+                app.render_md_templated,
+                (),
+                {
+                    "dep_root": md_cleaned_root,
+                    "full_config": full_config_file,
+                },
+            )
+        ],
         "clean": True,
     }
 
@@ -69,7 +87,7 @@ def task_render_to_template():
                 (),
                 {
                     "dep_root": md_to_html_root,
-                    "front_matter_file": full_config_file,
+                    "full_config": full_config_file,
                 },
             )
         ],
