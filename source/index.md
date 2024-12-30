@@ -2,7 +2,7 @@
 
 The word "sage" can refer to several distinct but related concepts, depending on the context. Here’s an overview:
 
-{% for key, value in pages['sage-types'].items() %}
+{% for key, value in site['sage-types'].items() %}
     {% if key != '_values' %}
 1. **[{{ value['_values']['title'] }}]({{ value['_values']['path'] }}.html)**
     {% endif %}

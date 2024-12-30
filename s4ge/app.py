@@ -32,9 +32,7 @@ def multilevel_dict_access(
     cur = source
 
     leaf_value = {}
-    leaf_value.update(
-        cur.get(access_key, {})
-    )
+    leaf_value.update(cur.get(access_key, {}))
 
     for part in path:
         if cur.get(part, None) is None:
@@ -48,7 +46,7 @@ def multilevel_dict_access(
     if writing:
         leaf_value.update(write)
         cur[access_key] = leaf_value
-        cur[access_key]['path'] = '/'.join(path)
+        cur[access_key]["path"] = "/".join(path)
 
     return leaf_value
 
@@ -105,17 +103,17 @@ def render_md_templated(dependencies, targets, dep_root, full_config):
         Path(targ).parent.mkdir(parents=True, exist_ok=True)
 
         with open(full_config) as full_config_file, open(targ, "w") as destination:
-            pages_config = json.load(full_config_file)
+            site_config = json.load(full_config_file)
             destination.write(
                 md_templated_source.get_template(
                     str(Path(dep).relative_to(dep_root))
                 ).render(
                     {
                         "config": config.Configured,
-                        "pages": pages_config,
+                        "site": site_config,
                         "page": multilevel_dict_access(
                             Path(dep).relative_to(dep_root).parts,
-                            pages_config,
+                            site_config,
                         ),
                     }
                 )
@@ -147,18 +145,18 @@ def render_to_template(dependencies, targets, dep_root, full_config):
             open(dep) as source,
             open(targ, "w") as destination,
         ):
-            pages_config = json.load(full_config_file)
+            site_config = json.load(full_config_file)
 
             page = multilevel_dict_access(
                 Path(dep).with_suffix("").relative_to(dep_root).parts,
-                pages_config,
+                site_config,
             )
             destination.write(
                 config.Templates.get_template(page["layout"]).render(
                     {
                         "content": source.read(),
                         "config": config.Configured,
-                        "pages": pages_config,
+                        "site": site_config,
                         "page": page,
                     }
                 )
